@@ -49,7 +49,8 @@ template<typename FieldT>
 void monomial_to_newton_basis_geometric(std::vector<FieldT> &a,
                                         const std::vector<FieldT> &geometric_sequence,
                                         const std::vector<FieldT> &geometric_triangular_sequence,
-                                        const size_t &n);
+                                        const size_t &n,
+                                        const FieldT &start = FieldT::one());
 
 /**
  * Perform the change of basis from Newton to Monomial Basis for geometric sequence
@@ -60,7 +61,8 @@ template<typename FieldT>
 void newton_to_monomial_basis_geometric(std::vector<FieldT> &a,
                                         const std::vector<FieldT> &geometric_sequence,
                                         const std::vector<FieldT> &geometric_triangular_sequence,
-                                        const size_t &n);
+                                        const size_t &n,
+                                        const FieldT &start = FieldT::one());
 
 } // libfqfft
 

@@ -103,7 +103,7 @@ void basic_radix2_domain<FieldT>::add_poly_Z(const FieldT &coeff, std::vector<Fi
 template<typename FieldT>
 void basic_radix2_domain<FieldT>::divide_by_Z_on_coset(std::vector<FieldT> &P)
 {
-    const FieldT coset = FieldT::multiplicative_generator;
+    const FieldT coset = this->get_coset();
     const FieldT Z_inverse_at_coset = this->compute_vanishing_polynomial(coset).inverse();
     for (size_t i = 0; i < this->m; ++i)
     {

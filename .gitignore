@@ -5,3 +5,5 @@
 build
 profiler
 profiling_menu
+cmake-build-debug
+.idea

@@ -12,6 +12,7 @@
  *****************************************************************************/
 
 #ifndef EXTENDED_RADIX2_DOMAIN_TCC_
+#define EXTENDED_RADIX2_DOMAIN_TCC_
 
 #include <libfqfft/evaluation_domain/domains/basic_radix2_domain_aux.hpp>
 
@@ -163,7 +164,7 @@ void extended_radix2_domain<FieldT>::add_poly_Z(const FieldT &coeff, std::vector
 template<typename FieldT>
 void extended_radix2_domain<FieldT>::divide_by_Z_on_coset(std::vector<FieldT> &P)
 {
-    const FieldT coset = FieldT::multiplicative_generator;
+    const FieldT coset = this->get_coset();
 
     const FieldT coset_to_small_m = coset^small_m;
     const FieldT shift_to_small_m = shift^small_m;

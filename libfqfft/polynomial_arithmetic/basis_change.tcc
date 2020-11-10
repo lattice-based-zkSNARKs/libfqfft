@@ -146,7 +146,8 @@ template<typename FieldT>
 void monomial_to_newton_basis_geometric(std::vector<FieldT> &a,
                                         const std::vector<FieldT> &geometric_sequence,
                                         const std::vector<FieldT> &geometric_triangular_sequence,
-                                        const size_t &n)
+                                        const size_t &n,
+                                        const FieldT &start)
 {
     std::vector<FieldT> u(n, FieldT::zero());
     std::vector<FieldT> w(n, FieldT::zero());
@@ -157,12 +158,14 @@ void monomial_to_newton_basis_geometric(std::vector<FieldT> &a,
     z[0] = FieldT::one();
     f[0] = a[0];
 
+    FieldT scale = start;
     for (size_t i = 1; i < n; i++)
     {
         u[i] = u[i-1] * geometric_sequence[i] * (FieldT::one() - geometric_sequence[i]).inverse();
         w[i] = a[i] * (u[i].inverse());
         z[i] = u[i] * geometric_triangular_sequence[i].inverse();
-        f[i] = w[i] * geometric_triangular_sequence[i];
+        f[i] = w[i] * geometric_triangular_sequence[i] * scale;
+        scale *= start;
 
         if (i % 2 == 1)
         {
@@ -173,12 +176,15 @@ void monomial_to_newton_basis_geometric(std::vector<FieldT> &a,
 
     w = _polynomial_multiplication_transpose(n - 1, z, f);
 
+    FieldT start_inv = start.inverse();
+    scale = FieldT::one();
 #ifdef MULTICORE
     #pragma omp parallel for
 #endif
     for (size_t i = 0; i < n; i++)
     {
-        a[i] = w[i] * z[i];
+        a[i] = w[i] * z[i] * scale;
+        scale *= start_inv;
     }
 }
 
@@ -186,7 +192,8 @@ template<typename FieldT>
 void newton_to_monomial_basis_geometric(std::vector<FieldT> &a,
                                         const std::vector<FieldT> &geometric_sequence,
                                         const std::vector<FieldT> &geometric_triangular_sequence,
-                                        const size_t &n)
+                                        const size_t &n,
+                                        const FieldT &start)
 {
     std::vector<FieldT> v(n, FieldT::zero());
     std::vector<FieldT> u(n, FieldT::zero());
@@ -197,26 +204,32 @@ void newton_to_monomial_basis_geometric(std::vector<FieldT> &a,
     w[0] = a[0];
     z[0] = FieldT::one();
 
+    FieldT scale = start;
     for (size_t i = 1; i < n; i++)
     {
         v[i] = a[i] * geometric_triangular_sequence[i];
         if (i % 2 == 1) v[i] = -v[i];
 
         u[i] = u[i-1] * geometric_sequence[i] * (FieldT::one() - geometric_sequence[i]).inverse();
-        w[i] = v[i] * u[i].inverse();
+        w[i] = v[i] * u[i].inverse() * scale;
 
         z[i] = u[i] * geometric_triangular_sequence[i].inverse();
         if (i % 2 == 1) z[i] = -z[i];
+
+        scale *= start;
     }
 
     w = _polynomial_multiplication_transpose(n - 1, u, w);
 
+    FieldT start_inv = start.inverse();
+    scale = FieldT::one();
 #ifdef MULTICORE
     #pragma omp parallel for
 #endif
     for (size_t i = 0; i < n; i++)
     {
-        a[i] = w[i] * z[i];
+        a[i] = w[i] * z[i] * scale;
+        scale *= start_inv;
     }
 }
 

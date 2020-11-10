@@ -12,6 +12,7 @@
  *****************************************************************************/
 
 #ifndef STEP_RADIX2_DOMAIN_TCC_
+#define STEP_RADIX2_DOMAIN_TCC_
 
 #include <libfqfft/evaluation_domain/domains/basic_radix2_domain_aux.hpp>
 
@@ -221,7 +222,7 @@ template<typename FieldT>
 void step_radix2_domain<FieldT>::divide_by_Z_on_coset(std::vector<FieldT> &P)
 {
     // (c^{2^k}-1) * (c^{2^r} * w^{2^{r+1}*i) - w^{2^r})
-    const FieldT coset = FieldT::multiplicative_generator;
+    const FieldT coset = this->get_coset();
 
     const FieldT Z0 = (coset^big_m) - FieldT::one();
     const FieldT coset_to_small_m_times_Z0 = (coset^small_m) * Z0;

@@ -37,7 +37,7 @@ template<typename FieldT>
 class evaluation_domain {
 public:
 
-    const size_t m;
+    size_t m;
 
     /**
      * Construct an evaluation domain S of size m, if possible.
@@ -96,6 +96,11 @@ public:
      * Multiply by the evaluation, on a coset of S, of the inverse of the vanishing polynomial of S.
      */
     virtual void divide_by_Z_on_coset(std::vector<FieldT> &P) = 0;
+
+    virtual FieldT get_coset()
+    {
+        return FieldT::multiplicative_generator;
+    }
 };
 
 } // libfqfft
